@@ -21,7 +21,7 @@ class SalesDataAnalyzer:
             print("Data is not available, please add dataset")
             return
 
-        print("\n======== Explore Data =======")
+        print("\n Explore Data")
         print("1. Display the first 5 rows")
         print("2. Display the last 5 rows")
         print("3. Display column names")
@@ -31,20 +31,17 @@ class SalesDataAnalyzer:
         choice = int(input("Enter your choice: "))
         match choice:
             case 1:
-                print("\nFirst 5 rows of dataset:\n")
-                print(self.data.head())
+                print("First 5 rows of dataset:",self.data.head())
             case 2:
-                print("\nLast 5 rows of dataset:\n")
-                print(self.data.tail())
+                print("Last 5 rows of dataset:",self.data.tail())
             case 3:
-                print("\nColumn names of the dataset:\n")
-                print(self.data.columns.unique())
+                print("Column names of the dataset:",self.data.columns.unique())
             case 4:
-                print("\nData types of the dataset:\n")
-                print(self.data.dtypes)
+                print("Data types of the dataset:",self.data.dtypes)
             case 5:
-                print("\nBasic information of dataset:\n")
-                print(self.data.info())
+                print("Basic information of dataset:")
+                self.data.info()
+
             case _:
                 print("Invalid choice")
 
@@ -54,10 +51,10 @@ class SalesDataAnalyzer:
             return
 
         while True:
-            print("\n======== Data Manipulation ========")
-            print("1. Add new column (mathematical operation)")
-            print("2. Combine another CSV with current data")
-            print("3. Split data by column value")
+            print("\n DataFrame Operations ")
+            print("1. Add two columns ")
+            print("2. Filter data by column value")
+            print("3. Delete a column")
             print("4. Go back")
 
             choice = int(input("Enter choice: "))
@@ -71,33 +68,35 @@ class SalesDataAnalyzer:
                     print(f"{new_col} created successfully!")
 
                 case 2:
-                    path = input("Enter path of other CSV: ")
-                    df2 = pd.read_csv(path)
-                    print(f"Before merging: {self.data.shape}")
-                    self.data = pd.concat([self.data, df2], ignore_index=True)
-                    print("DataFrames combined successfully!")
-                    print(f"After merging: {self.data.shape}")
-                    print("Preview of combined dataset:")
-                    print(self.data.head())
+                    col = input("Enter column name to filter by: ")
+                    value = input("Enter value to filter: ")
+                    filtered = self.data[self.data[col] == value]
+                    if filtered.empty:
+                        print("No matching records found.")
+                    else:
+                        print("Filtered data:\n", filtered)
 
                 case 3:
-                    col = input("Enter column name to split by: ")
-                    value = input("Enter value: ")
-                    subset = self.data[self.data[col] == value]
-                    print(subset)
+                    col = input("Enter the column name to delete: ")
+                    if col in self.data.columns:
+                        self.data.drop(columns=[col], inplace=True)
+                        print(f"Column '{col}' deleted successfully!")
+                    else:
+                        print(f"Column '{col}' not found in the dataset.")
 
                 case 4:
                     break
 
                 case _:
                     print("Invalid choice")
+
     def Handle_missing_values(self):
         if self.data is None:
             print("Data is not available, please add dataset")
             return
 
         while True:
-            print("\n======== Handle Missing Values =======")
+            print("\nHandle Missing Values ")
             print("1. Display rows with missing values")
             print("2. Fill missing values with mean")
             print("3. Drop rows with missing values")
@@ -108,43 +107,41 @@ class SalesDataAnalyzer:
 
             match choice:
                 case 1:
-                    rows_with_any_missing = self.data.isna().any(axis=1)
-                    df_with_missing = self.data[rows_with_any_missing]
+                    rowswithmissingdata = self.data.isna().any(axis=1)
+                    df_with_missing = self.data[rowswithmissingdata]
                     if df_with_missing.empty:
                         print("No missing values found in the dataset")
                     else:
-                        print("\nRows with missing values:\n")
-                        print(df_with_missing)
+                        print("Rows with missing values:\n",df_with_missing)
+                        
 
                 case 2:
-                    rows_with_any_missing = self.data.isna().any(axis=1)
-                    df_with_missing = self.data[rows_with_any_missing]
+                    rowswithmissingdata = self.data.isna().any(axis=1)
+                    df_with_missing = self.data[rowswithmissingdata]
                     if df_with_missing.empty:
                         print("No missing values found in the dataset")
                     else:
                         mean_values = self.data.mean(numeric_only=True)
                         print(f"Mean of the dataset is:\n{mean_values}")
-                        print("\nFilling numerical missing values with mean...\n")
                         self.data.fillna(mean_values, inplace=True)
-                        print(self.data)
-                        print("\nNumerical missing values filled with mean")
-                        print(self.data.info())
+                        print("Filling numerical missing values with mean...")
+                        print("numerical missing values are filled with mean value")
 
                 case 3:
-                    rows_with_any_missing = self.data.isna().any(axis=1)
-                    df_with_missing = self.data[rows_with_any_missing]
+                    rowswithmissingdata = self.data.isna().any(axis=1)
+                    df_with_missing = self.data[rowswithmissingdata]
                     if df_with_missing.empty:
                         print("No missing values found in the dataset")
                     else:
-                        print("\nDropping rows with missing values...\n")
+                        print("Dropping rows with missing values...")
                         self.data.dropna(inplace=True)
                         print(self.data)
-                        print("\nRows with missing values are dropped")
-                        print(self.data.info())
+                        print("Rows with missing values are dropped")
+                       
 
                 case 4:
-                    rows_with_any_missing = self.data.isna().any(axis=1)
-                    df_with_missing = self.data[rows_with_any_missing]
+                    rowswithmissingdata = self.data.isna().any(axis=1)
+                    df_with_missing = self.data[rowswithmissingdata]
                     if df_with_missing.empty:
                         print("No missing values found in the dataset")
                     else:
@@ -159,13 +156,13 @@ class SalesDataAnalyzer:
                 case _:
                     print("Invalid choice")
 
-    def descriptive_stastics(self):
+    def descriptive_statistics(self):
         if self.data is None:
             print("Data not available.")
             return
 
         while True:
-            print("\n======== Data Analysis ========")
+            print(" Data Analysis ")
             print("1. Search specific record")
             print("2. Filter data by condition")
             print("3. Sort data by column")
@@ -218,52 +215,10 @@ class SalesDataAnalyzer:
                 case _:
                     print("Invalid choice")
 
-    def advanced_operations(self):
-        if self.data is None:
-            print("Data not available.")
-            return
-
-        while True:
-            print("\n======== Advanced Operations ========")
-            print("1. Create Pivot Table")
-            print("2. Re-index data")
-            print("3. Groupby aggregation")
-            print("4. Transform operation")
-            print("5. Go back")
-
-            choice = int(input("Enter choice: "))
-
-            match choice:
-                case 1:
-                    index = input("Enter index column: ")
-                    values = input("Enter values column: ")
-                    agg = input("Enter aggregation (sum/mean): ")
-                    print(pd.pivot_table(self.data, index=index, values=values, aggfunc=agg))
-
-                case 2:
-                    new_index = input("Enter column to set as new index: ")
-                    self.data.set_index(new_index, inplace=True)
-                    print("Re-indexed successfully!")
-                    print(self.data.head())
-
-                case 3:
-                    col = input("Enter column to group by: ")
-                    print(self.data.groupby(col).sum())
-
-                case 4:
-                    col = input("Enter column to transform: ")
-                    print(self.data[col].transform(lambda x: x - x.mean()))
-
-                case 5:
-                    break
-
-                case _:
-                    print("Invalid choice")
-
     def _show_plot(self):
-        plt.show(block=False)
-        plt.pause(0.001)
-        print("\nPlot displayed. You can choose another visualization or select 7 to go back.")
+        plt.show()
+        input("Press Enter to continue...")
+        plt.close()
 
     def _list_columns(self):
         if self.data is not None:
@@ -299,7 +254,7 @@ class SalesDataAnalyzer:
             return
 
         while True:
-            print("\n======== Data Visualization ========\n")
+            print("\nData Visualization ")
             print("1. Bar Plot")
             print("2. Line Plot")
             print("3. Scatter Plot")
@@ -426,17 +381,16 @@ class SalesDataAnalyzer:
 
     def main(self):
         while True:
-            print("\n========= Data Analysis & Visualization Program =========")
+            print("\n Data Analysis & Visualization Program")
             print("Please select an option:")
             print("1. Load Dataset")
             print("2. Explore Data")
             print("3. Perform DataFrame Operations")
             print("4. Handle Missing Data")
             print("5. Generate Descriptive Statistics")
-            print("6. Perform Advanced Operations")
-            print("7. Data Visualization")
-            print("8. Save Visualization")
-            print("9. Exit\n")
+            print("6. Data Visualization")
+            print("7. Save Visualization")
+            print("8. Exit\n")
 
             choice = int(input("Enter your choice: "))
 
@@ -450,14 +404,12 @@ class SalesDataAnalyzer:
                 case 4:
                     self.Handle_missing_values()
                 case 5:
-                    self.descriptive_stastics()
+                    self.descriptive_statistics()
                 case 6:
-                    self.advanced_operations()
-                case 7:
                     self.data_visualization()
-                case 8:
+                case 7:
                     self.save_visualization_save()
-                case 9:
+                case 8:
                     print("Exiting program. Goodbye!")
                     break
                 case _:
@@ -471,3 +423,14 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
+  
+
+
+
+
+
+
